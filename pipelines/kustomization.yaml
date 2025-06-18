@@ -1,0 +1,2 @@
+resources:
+  - breast_cancer_knn_pipeline.yaml
