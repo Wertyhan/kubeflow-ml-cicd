@@ -1,0 +1,38 @@
+name: Build Kubeflow Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "kubeflow_pipeline.py"
+      - "requirements.txt"
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Make output directory
+        run: mkdir -p pipelines
+
+      - name: Compile Kubeflow pipeline
+        run: |
+          python kubeflow_pipeline.py
+
+      - name: Commit compiled pipeline YAML
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update compiled pipeline"
+          file_pattern: pipelines/breast_cancer_knn_pipeline.yaml
